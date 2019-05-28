@@ -1,0 +1,14 @@
+### add data to storage
+
+POST http://localhost:3003/api/v1/
+Content-Type: application/json
+
+{
+    "name":"asdsd",
+    "email":"asdsad@gmail.com"
+}
+
+### get data
+
+GET  http://localhost:3003/api/v1/
+Content-Type: application/json
