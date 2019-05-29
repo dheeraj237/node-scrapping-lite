@@ -1,4 +1,4 @@
-const apiRoute = require('./apis');
+const apiRoute = require('./apis/platformRoute');
 
 const init = (server) => {
     server.get('*', function (req, res, next) {
@@ -6,6 +6,11 @@ const init = (server) => {
         return next();
     });
 
+    server.get('/', function (req, res) {
+        res.sendFile('/public/index.html');
+    });
+
+    // registering routes
     server.use('/api', apiRoute);
 }
 module.exports = {

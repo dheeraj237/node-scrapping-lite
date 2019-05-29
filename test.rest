@@ -1,14 +1,14 @@
 ### add data to storage
 
-POST http://localhost:3003/api/v1/
+POST http://localhost:3003/api/get-products
 Content-Type: application/json
 
-{
-    "name":"asdsd",
-    "email":"asdsad@gmail.com"
-}
+{ "productName": "Austin Wood Striper Men's Polo Neck Tshirt",
+    "productURL": "https://www.amazon.in/Austin-Wood-Striper-Mens-Tshirt/dp/B07P66CFX2/ref=sr_1_56?crid=1YCM5LZ91TPSG&keywords=mens+polo+t+shirt&qid=1559155990&rnid=3576079031&s=apparel&sprefix=Mens+po%2Caps%2C258&sr=1-56",
+    "productPrice": "399",
+    "platform": "amazon" } 
 
 ### get data
 
-GET  http://localhost:3003/api/v1/
+GET  http://localhost:3003/api/get-products
 Content-Type: application/json

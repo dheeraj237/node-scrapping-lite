@@ -2,8 +2,7 @@ const storage = require('../configs/storage')
 
 const getAllProduct = async (req, res, next) => {
     try {
-        let data = await storage.getItem('data');
-
+        let data = await storage.getItem('products');
         if (data.length > 0) {
             return res.status(200).json({
                 'message': 'data fetched successfully',
@@ -26,7 +25,8 @@ const getAllProduct = async (req, res, next) => {
 const getProductByPlatform = async (req, res, next) => {
     try {
         const platform = req.params.platform;
-        let data = await storage.getItem('data');
+        let data = await storage.getItem('products');
+        data = data.filter(el => el.platform === platform)
         if (platform) {
             return res.status(200).json({
                 'message': 'plateform query successfully',
@@ -59,9 +59,9 @@ const addData = async (req, res, next) => {
         }
 
         if (obj) {
-            let data = await storage.getItem('data');
+            let data = await storage.getItem('products');
             data.push(obj)
-            await storage.setItem('data', data)
+            await storage.setItem('products', data)
             return res.status(200).json({
                 'message': 'data added successfully',
                 'data': data

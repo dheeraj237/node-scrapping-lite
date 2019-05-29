@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const scrapper = require('../scrapper');
 
 module.exports = function () {
     let server = express(),
@@ -18,13 +19,26 @@ module.exports = function () {
         server.use(bodyParser.urlencoded({
             extended: false
         }));
-
+        server.use(express.static('public'));
+        scrapper()
+            .then((data) => {
+                storage.setItem('products', [...data[0], ...data[1]])
+            })
+            .catch((err) => {
+                console.log(err);
+            })
         //Register Scrappong Job
         setInterval(async () => {
             await storage.setItem('lastUpdated', new Date().toString())
             console.log('========================================')
+            scrapper()
+                .then((data) => {
+                    storage.setItem('products', [...data[0], ...data[1]])
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
             console.log('cron > ', await storage.getItem('lastUpdated'));
-            console.log('cron > ', await storage.getItem('data'));
         }, config.interval);
 
 
