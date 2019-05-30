@@ -1,8 +1,9 @@
-const apiRoute = require('./apis/platformRoute');
+const plateformService = require('./plateformSrvc');
+const router = require('express').Router();
 
 const init = (server) => {
     server.get('*', function (req, res, next) {
-        console.log('Request was made to: ' + req.originalUrl);
+        console.log('[Request] : ' + req.originalUrl);
         return next();
     });
 
@@ -10,8 +11,11 @@ const init = (server) => {
         res.sendFile('/public/index.html');
     });
 
-    // registering routes
-    server.use('/api', apiRoute);
+    router.get('/get-products/', plateformService.getAllProduct);
+    router.post('/get-products/', plateformService.addData);
+    router.get('/get-products/:platform', plateformService.getProductByPlatform);
+
+    server.use(router)
 }
 module.exports = {
     init: init

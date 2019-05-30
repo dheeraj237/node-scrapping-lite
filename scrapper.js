@@ -1,20 +1,22 @@
 const cheerio = require('cheerio');
 const request = require('request');
 const zlib = require('zlib');
-const fs = require('fs');
 const config = require('./configs/config')
 
-console.log('config ', config)
-const amazonUrl = 'https://www.amazon.in/s?k=mens+polo+t+shirt&rh=n%3A1571271031%2Cn%3A1968122031&dc&crid=1YCM5LZ91TPSG&qid=1558927571&rnid=3576079031&sprefix=Mens+po%2Caps%2C258&ref=sr_nr_n_2';
-let flipkartUrl = 'https://www.flipkart.com/men/tshirts/pr?sid=2oq%2Cs9b%2Cj9y&otracker=nmenu_sub_Men_0_T-Shirts';
+const amazonUrl = config.amazonUrl;
+let flipkartUrl = config.flipkartUrl;
 
 let flipkartHandler = new Promise((resolve, reject) => {
     let flipkartData = [];
-    console.log('flipkartUrl ', flipkartUrl)
-    request(flipkartUrl, function (error, response, body) {
+    request(flipkartUrl, async (error, response, body) => {
         if (error) reject(error);
+        if (response.headers['content-encoding'] == 'gzip') {
+            await zlib.gunzip(body, function (err, dezipped) {
+                if (err) throw err;
+                body = dezipped.toString();
+            });
+        }
         // console.log('statusCode:', response && response.statusCode);
-        response.pipe(fs.createWriteStream('data/flipkart.html'))
         var $ = cheerio.load(body);
         //search items container
         $('._2LFGJH').each(function (items) {
@@ -38,7 +40,6 @@ let flipkartHandler = new Promise((resolve, reject) => {
 
 let amazonHandler = new Promise((resolve, reject) => {
     let amazonData = [];
-    console.log('amazonUrl ', amazonUrl)
     request(amazonUrl, async (error, response, body) => {
         if (error) reject(error);
         if (response.headers['content-encoding'] == 'gzip') {
@@ -48,7 +49,6 @@ let amazonHandler = new Promise((resolve, reject) => {
             });
         }
         // console.log('statusCode:', response, response.statusCode);
-        // response.pipe(fs.createWriteStream('data/amazon.html'))
         var $ = cheerio.load(body);
         //search items container
         $('.s-result-list .sg-row').each(function (idx, el) {
@@ -68,7 +68,7 @@ let amazonHandler = new Promise((resolve, reject) => {
         resolve(amazonData);
     });
 });
-console.log('scrapping...');
+console.log('[Scrapping]...');
 
 module.exports = () => {
     return Promise.all([flipkartHandler, amazonHandler]);

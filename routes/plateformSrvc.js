@@ -1,4 +1,4 @@
-const storage = require('../configs/storage')
+const storage = require('../storage')
 
 const getAllProduct = async (req, res, next) => {
     try {

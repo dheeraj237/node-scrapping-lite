@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const scrapper = require('../scrapper');
+const scrapper = require('./scrapper');
 
 module.exports = function () {
     let server = express(),
@@ -8,7 +8,7 @@ module.exports = function () {
         start;
 
     create = (config, storage) => {
-        let routes = require('../routes');
+        let routes = require('./routes');
         // set all the server things
         server.set('env', config.env);
         server.set('port', config.port);
@@ -27,10 +27,11 @@ module.exports = function () {
             .catch((err) => {
                 console.log(err);
             })
+
         //Register Scrappong Job
         setInterval(async () => {
             await storage.setItem('lastUpdated', new Date().toString())
-            console.log('========================================')
+            console.log('========================================');
             scrapper()
                 .then((data) => {
                     storage.setItem('products', [...data[0], ...data[1]])
@@ -38,7 +39,8 @@ module.exports = function () {
                 .catch((err) => {
                     console.log(err);
                 })
-            console.log('cron > ', await storage.getItem('lastUpdated'));
+            console.log('[Update Product]:', await storage.getItem('lastUpdated'));
+            console.log('========================================')
         }, config.interval);
 
 
@@ -51,7 +53,7 @@ module.exports = function () {
         let hostname = server.get('hostname'),
             port = server.get('port');
         server.listen(port, function () {
-            console.log('Express server listening on - http://' + hostname + ':' + port);
+            console.log(`Express server listening on - http://${hostname}:${port}`);
         });
     };
     return {
