@@ -22,6 +22,7 @@ module.exports = function () {
         server.use(express.static('public'));
         scrapper()
             .then((data) => {
+                console.log('[Scrapped]')
                 storage.setItem('products', [...data[0], ...data[1]])
             })
             .catch((err) => {

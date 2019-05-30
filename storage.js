@@ -7,7 +7,8 @@ const storage = require('node-persist');
         parse: JSON.parse,
         // encoding: 'utf8',
     })
-    console.log('[Strorage Iniitialized]'); // yourname
+    await storage.setItem('products', [])
+    console.log('[Strorage Iniitialized]');
 })();
 
 module.exports = storage;
